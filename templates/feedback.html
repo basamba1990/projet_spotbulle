@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Feedback</title>
+</head>
+<body>
+    <h2>Feedback</h2>
+    <form action="/feedback" method="POST">
+        <input type="hidden" name="category" value="{{ request.args.get('category') }}">
+        <label for="feedback">La catégorie "{{ request.args.get('category') }}" est-elle pertinente ?</label><br>
+        <textarea id="feedback" name="feedback" rows="4" cols="50"></textarea><br>
+        <button type="submit">Envoyer</button>
+    </form>
+</body>
+</html>
