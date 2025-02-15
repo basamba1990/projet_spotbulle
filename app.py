@@ -3,12 +3,21 @@ import os
 from werkzeug.utils import secure_filename
 from models.transcriber import transcribe_video
 from models.classifier import classify_pitch
+from dotenv import load_dotenv
 
+# Charger les variables d'environnement depuis le fichier .env
+load_dotenv()
+
+# Créer l'application Flask
 app = Flask(__name__)
 
-UPLOAD_FOLDER = "static/uploads"
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# Utiliser les variables d'environnement pour configurer l'application
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")  # Clé secrète
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")  # URL de la base de données (ici pour SQLite ou autre)
+app.config["UPLOAD_FOLDER"] = os.getenv("UPLOAD_FOLDER", "static/uploads")  # Dossier des fichiers téléchargés
+
+# Créer le dossier d'upload si nécessaire
+os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 @app.route("/")
 def index():
