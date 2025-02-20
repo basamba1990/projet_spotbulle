@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feedback</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h2>Feedback</h2>
-    <form action="/feedback" method="POST">
-        <input type="hidden" name="category" value="{{ request.args.get('category') }}">
-        <label for="feedback">La catégorie "{{ request.args.get('category') }}" est-elle pertinente ?</label><br>
-        <textarea id="feedback" name="feedback" rows="4" cols="50"></textarea><br>
-        <button type="submit">Envoyer</button>
-    </form>
+    <header>
+        <h1>Feedback sur le Pitch</h1>
+    </header>
+
+    <main>
+        <form action="/feedback" method="POST">
+            <label for="category">Catégorie du Pitch :</label>
+            <input type="text" name="category" id="category" required>
+
+            <label for="feedback">Votre Feedback :</label>
+            <textarea name="feedback" id="feedback" required></textarea>
+
+            <button type="submit">Envoyer Feedback</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Application Pitch</p>
+    </footer>
 </body>
 </html>
