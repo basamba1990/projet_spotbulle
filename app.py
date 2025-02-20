@@ -23,6 +23,10 @@ os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 def index():
     return render_template("index.html")
 
+@app.route("/upload")
+def upload_page():
+    return render_template("upload.html")
+
 @app.route("/upload", methods=["POST"])
 def upload_video():
     if "file" not in request.files:
@@ -40,12 +44,16 @@ def upload_video():
 
     return jsonify({"transcription": text, "category": category})
 
-@app.route("/feedback", methods=["POST"])
-def feedback():
-    user_feedback = request.form.get("feedback")
-    category = request.form.get("category")
-    print(f"Feedback reçu : {user_feedback} pour la catégorie {category}")
-    return redirect(url_for("index"))
+@app.route("/feedback", methods=["GET", "POST"])
+def feedback_page():
+    if request.method == "POST":
+        user_feedback = request.form.get("feedback")
+        category = request.form.get("category")
+        # Ici, vous pouvez stocker le feedback dans une base de données
+        print(f"Feedback reçu : {user_feedback} pour la catégorie {category}")
+        return redirect(url_for("index"))
+
+    return render_template("feedback.html")
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Render fournit le port dynamiquement
