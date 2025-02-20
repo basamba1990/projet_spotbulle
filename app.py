@@ -12,8 +12,8 @@ load_dotenv()
 app = Flask(__name__)
 
 # Configurer l'application avec les variables d'environnement
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "default_secret_key")  
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///database.db")  
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "default_secret_key")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///database.db")
 app.config["UPLOAD_FOLDER"] = os.getenv("UPLOAD_FOLDER", "static/uploads")
 
 # Créer le dossier d'upload s'il n'existe pas
@@ -31,6 +31,7 @@ def upload_page():
 def upload_video():
     if "file" not in request.files:
         return jsonify({"error": "Aucun fichier reçu"}), 400
+    
     file = request.files["file"]
     filename = secure_filename(file.filename)
     filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
@@ -49,9 +50,9 @@ def feedback_page():
     if request.method == "POST":
         user_feedback = request.form.get("feedback")
         category = request.form.get("category")
-        # Ici, vous pouvez stocker le feedback dans une base de données
+        # Sauvegarde le feedback dans la base de données ou log
         print(f"Feedback reçu : {user_feedback} pour la catégorie {category}")
-        return redirect(url_for("index"))
+        return redirect(url_for("index"))  # Redirige vers la page d'accueil
 
     return render_template("feedback.html")
 
