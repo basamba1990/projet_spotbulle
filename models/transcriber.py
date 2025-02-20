@@ -1,7 +1,22 @@
-import speech_v1p1beta1
+from google.cloud import speech_v1p1beta1 as speech
+import os
 
-model = speech_v1p1beta1.load_model("base")
+def transcribe_video(video_path: str) -> str:
+    """ Transcrit l'audio d'une vidéo en texte avec Google Speech-to-Text. """
+    client = speech.SpeechClient()
+    
+    with open(video_path, "rb") as audio_file:
+        content = audio_file.read()
 
-def transcribe_video(video_path):
-    result = model.transcribe(video_path)
-    return result["text"]
+    audio = speech.RecognitionAudio(content=content)
+    config = speech.RecognitionConfig(
+        encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
+        sample_rate_hertz=16000,
+        language_code="fr-FR",
+    )
+
+    response = client.recognize(config=config, audio=audio)
+    
+    transcription = " ".join(result.alternatives[0].transcript for result in response.results)
+    
+    return transcription.strip()
