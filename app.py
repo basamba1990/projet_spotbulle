@@ -11,12 +11,12 @@ load_dotenv()
 # Créer l'application Flask
 app = Flask(__name__)
 
-# Utiliser les variables d'environnement pour configurer l'application
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")  # Clé secrète
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")  # URL de la base de données (ici pour SQLite ou autre)
-app.config["UPLOAD_FOLDER"] = os.getenv("UPLOAD_FOLDER", "static/uploads")  # Dossier des fichiers téléchargés
+# Configurer l'application avec les variables d'environnement
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "default_secret_key")  
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///database.db")  
+app.config["UPLOAD_FOLDER"] = os.getenv("UPLOAD_FOLDER", "static/uploads")
 
-# Créer le dossier d'upload si nécessaire
+# Créer le dossier d'upload s'il n'existe pas
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 @app.route("/")
@@ -32,10 +32,10 @@ def upload_video():
     filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
     file.save(filepath)
 
-    # Transcription
+    # Transcrire la vidéo en texte
     text = transcribe_video(filepath)
 
-    # Catégorisation
+    # Classifier le pitch basé sur la transcription
     category = classify_pitch(text)
 
     return jsonify({"transcription": text, "category": category})
@@ -44,9 +44,9 @@ def upload_video():
 def feedback():
     user_feedback = request.form.get("feedback")
     category = request.form.get("category")
-    # Ici, vous pouvez stocker le feedback dans une base de données
     print(f"Feedback reçu : {user_feedback} pour la catégorie {category}")
     return redirect(url_for("index"))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Render fournit le port dynamiquement
+    app.run(host="0.0.0.0", port=port, debug=True)
